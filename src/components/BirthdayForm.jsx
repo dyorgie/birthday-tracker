@@ -44,13 +44,14 @@ export default function BirthdayForm({ onAdd }) {
     <form onSubmit={handleSubmit} className="birthday-form">
       <label htmlFor="name">Name</label>
       <input
-        id="name"
-        type="text"
-        placeholder="e.g. Mom"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
+  id="name"
+  type="text"
+  placeholder="e.g. Mom"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  maxLength={60}
+  required
+/>
 
       <label htmlFor="dob">Birthday</label>
       <input

@@ -37,7 +37,15 @@ export default function BirthdayList({ entries, onDelete }) {
                 ? activeReminders.map((key) => FREQUENCY_LABELS[key]).join(", ")
                 : "No reminders set"}
             </small>
-            <button onClick={() => onDelete(entry.id)}>Delete</button>
+            <button
+  onClick={() => {
+    if (window.confirm(`Delete ${entry.name}'s birthday? This can't be undone.`)) {
+      onDelete(entry.id);
+    }
+  }}
+>
+  Delete
+</button>
           </div>
         );
       })}

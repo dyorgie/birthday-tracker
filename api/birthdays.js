@@ -27,6 +27,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Name and dob are required" });
       }
 
+      if (name.length > 60) {
+        return res.status(400).json({ error: "Name must be 60 characters or fewer" });
+      }
+
       const rows = await sql`
         INSERT INTO birthdays (name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of, user_id)
         VALUES (
