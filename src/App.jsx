@@ -3,6 +3,7 @@ import BirthdayForm from "./components/BirthdayForm";
 import BirthdayList from "./components/BirthdayList";
 import { getUserId } from "./utils/userId";
 import "./index.css";
+import { registerServiceWorker, subscribeToPush } from "./utils/push";
 
 function normalizeEntry(row) {
   return {
@@ -22,6 +23,21 @@ function App() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = getUserId();
+
+const [notifStatus, setNotifStatus] = useState(
+    typeof Notification !== "undefined" ? Notification.permission : "unsupported"
+  );
+
+  useEffect(() => {
+    registerServiceWorker();
+  }, []);
+
+  async function handleEnableNotifications() {
+    const success = await subscribeToPush();
+    if (success) {
+      setNotifStatus("granted");
+    }
+  }
 
   useEffect(() => {
     fetch("/api/birthdays", {
@@ -82,6 +98,11 @@ function App() {
   return (
     <div className="app">
       <h1>🎂 Birthday Tracker</h1>
+{notifStatus !== "granted" && notifStatus !== "unsupported" && (
+        <button className="enable-notif-btn" onClick={handleEnableNotifications}>
+          🔔 Enable Notifications
+        </button>
+      )}
       <BirthdayForm onAdd={handleAdd} />
       {loading ? (
         <p className="empty-state">Loading...</p>

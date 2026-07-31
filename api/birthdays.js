@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
       const rows = await sql`
-        SELECT id, name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of
+        SELECT id, name, dob::text, notify_week, notify_three_day, notify_one_day, notify_day_of
         FROM birthdays
         WHERE user_id = ${userId}
         ORDER BY created_at ASC
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
           ${frequency?.dayOf ?? false},
           ${userId}
         )
-        RETURNING id, name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of
+        RETURNING id, name, dob::text, notify_week, notify_three_day, notify_one_day, notify_day_of
       `;
 
       return res.status(201).json(rows[0]);
