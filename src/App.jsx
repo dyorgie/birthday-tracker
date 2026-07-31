@@ -6,15 +6,12 @@ import "./index.css";
 const STORAGE_KEY = "birthdays";
 
 function App() {
-  const [entries, setEntries] = useState([]);
-
-  // Load saved entries once, when the app first opens
-  useEffect(() => {
+  // Load saved entries directly when state is first created —
+  // avoids the race condition of loading in a separate effect
+  const [entries, setEntries] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setEntries(JSON.parse(saved));
-    }
-  }, []);
+    return saved ? JSON.parse(saved) : [];
+  });
 
   // Whenever entries change, save them back to localStorage
   useEffect(() => {
