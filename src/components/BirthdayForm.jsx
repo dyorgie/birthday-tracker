@@ -27,7 +27,6 @@ export default function BirthdayForm({ onAdd }) {
     if (!name || !dob) return;
 
     const newEntry = {
-      id: crypto.randomUUID(),
       name,
       dob,
       frequency,

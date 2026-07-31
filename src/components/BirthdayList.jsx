@@ -6,8 +6,8 @@ const FREQUENCY_LABELS = {
 };
 
 function formatDate(dob) {
-  // dob comes in as "YYYY-MM-DD" from the date input
-  const [year, month, day] = dob.split("-");
+  const datePart = dob.split("T")[0]; // strip any time portion Postgres adds
+  const [year, month, day] = datePart.split("-");
   const date = new Date(year, month - 1, day);
   return date.toLocaleDateString(undefined, {
     month: "long",
