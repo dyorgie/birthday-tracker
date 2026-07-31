@@ -3,11 +3,18 @@ import { neon } from "@neondatabase/serverless";
 const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
+  const userId = req.headers["x-user-id"];
+
+  if (!userId) {
+    return res.status(400).json({ error: "Missing x-user-id header" });
+  }
+
   try {
     if (req.method === "GET") {
       const rows = await sql`
         SELECT id, name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of
         FROM birthdays
+        WHERE user_id = ${userId}
         ORDER BY created_at ASC
       `;
       return res.status(200).json(rows);
@@ -21,14 +28,15 @@ export default async function handler(req, res) {
       }
 
       const rows = await sql`
-        INSERT INTO birthdays (name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of)
+        INSERT INTO birthdays (name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of, user_id)
         VALUES (
           ${name},
           ${dob},
           ${frequency?.week ?? false},
           ${frequency?.threeDay ?? false},
           ${frequency?.oneDay ?? false},
-          ${frequency?.dayOf ?? false}
+          ${frequency?.dayOf ?? false},
+          ${userId}
         )
         RETURNING id, name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of
       `;
@@ -43,7 +51,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "id is required" });
       }
 
-      await sql`DELETE FROM birthdays WHERE id = ${id}`;
+      // WHERE clause includes user_id so you can only delete your own entries
+      await sql`DELETE FROM birthdays WHERE id = ${id} AND user_id = ${userId}`;
       return res.status(200).json({ success: true });
     }
 

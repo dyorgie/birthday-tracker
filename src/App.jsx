@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import BirthdayForm from "./components/BirthdayForm";
 import BirthdayList from "./components/BirthdayList";
+import { getUserId } from "./utils/userId";
 import "./index.css";
 
 function normalizeEntry(row) {
@@ -20,10 +21,12 @@ function normalizeEntry(row) {
 function App() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userId = getUserId();
 
-  // Load entries from the API when the app first opens
   useEffect(() => {
-    fetch("/api/birthdays")
+    fetch("/api/birthdays", {
+      headers: { "x-user-id": userId },
+    })
       .then((res) => res.json())
       .then((data) => {
         setEntries(data.map(normalizeEntry));
@@ -33,13 +36,16 @@ function App() {
         console.error("Failed to load birthdays:", err);
         setLoading(false);
       });
-  }, []);
+  }, [userId]);
 
   async function handleAdd(newEntry) {
     try {
       const res = await fetch("/api/birthdays", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": userId,
+        },
         body: JSON.stringify({
           name: newEntry.name,
           dob: newEntry.dob,
@@ -61,6 +67,7 @@ function App() {
     try {
       const res = await fetch(`/api/birthdays?id=${id}`, {
         method: "DELETE",
+        headers: { "x-user-id": userId },
       });
 
       if (!res.ok) throw new Error("Failed to delete birthday");
