@@ -93,17 +93,6 @@ h1 {
   color: #666;
 }
 
-.entry button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #e74c3c;
-  cursor: pointer;
-  font-size: 13px;
-}
-
 .empty-state {
   text-align: center;
   color: #999;
@@ -120,4 +109,171 @@ h1 {
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+}
+
+.date-fields {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.date-fields select,
+.date-fields input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.date-fields select {
+  flex: 1.5;
+}
+
+.date-fields input {
+  flex: 1;
+}
+
+.birthday-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.entry-notes {
+  font-size: 13px;
+  color: #444;
+  margin: 4px 0;
+  white-space: pre-wrap;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.delete-btn {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.cancel-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.filter-bar select {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.notification-bell-wrapper {
+  position: absolute;
+  right: 0;
+}
+
+.notification-bell-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative;
+  padding: 4px;
+}
+
+.unread-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: #e74c3c;
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+.notification-panel {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  z-index: 10;
+}
+
+.notification-panel-title {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.notification-item {
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+}
+
+.notification-item:first-of-type {
+  border-top: none;
+}
+
+.notification-item-body {
+  font-size: 13px;
+  color: #333;
+}
+
+.notification-item-time {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
 }
