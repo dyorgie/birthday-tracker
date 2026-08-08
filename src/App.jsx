@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import BirthdayForm from "./components/BirthdayForm";
 import BirthdayList from "./components/BirthdayList";
 import { getUserId } from "./utils/userId";
-import "./index.css";
 import { registerServiceWorker, subscribeToPush } from "./utils/push";
+import "./index.css";
 
 function normalizeEntry(row) {
   return {
     id: row.id,
     name: row.name,
-    dob: row.dob,
+    month: row.birth_month,
+    day: row.birth_day,
+    year: row.birth_year,
+    notes: row.notes,
     frequency: {
       week: row.notify_week,
       threeDay: row.notify_three_day,
@@ -24,20 +27,13 @@ function App() {
   const [loading, setLoading] = useState(true);
   const userId = getUserId();
 
-const [notifStatus, setNotifStatus] = useState(
+  const [notifStatus, setNotifStatus] = useState(
     typeof Notification !== "undefined" ? Notification.permission : "unsupported"
   );
 
   useEffect(() => {
     registerServiceWorker();
   }, []);
-
-  async function handleEnableNotifications() {
-    const success = await subscribeToPush();
-    if (success) {
-      setNotifStatus("granted");
-    }
-  }
 
   useEffect(() => {
     fetch("/api/birthdays", {
@@ -54,6 +50,13 @@ const [notifStatus, setNotifStatus] = useState(
       });
   }, [userId]);
 
+  async function handleEnableNotifications() {
+    const success = await subscribeToPush();
+    if (success) {
+      setNotifStatus("granted");
+    }
+  }
+
   async function handleAdd(newEntry) {
     try {
       const res = await fetch("/api/birthdays", {
@@ -64,7 +67,10 @@ const [notifStatus, setNotifStatus] = useState(
         },
         body: JSON.stringify({
           name: newEntry.name,
-          dob: newEntry.dob,
+          month: newEntry.month,
+          day: newEntry.day,
+          year: newEntry.year,
+          notes: newEntry.notes,
           frequency: newEntry.frequency,
         }),
       });
@@ -98,7 +104,7 @@ const [notifStatus, setNotifStatus] = useState(
   return (
     <div className="app">
       <h1>🎂 Birthday Tracker</h1>
-{notifStatus !== "granted" && notifStatus !== "unsupported" && (
+      {notifStatus !== "granted" && notifStatus !== "unsupported" && (
         <button className="enable-notif-btn" onClick={handleEnableNotifications}>
           🔔 Enable Notifications
         </button>

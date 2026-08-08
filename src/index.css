@@ -121,3 +121,43 @@ h1 {
   font-size: 14px;
   cursor: pointer;
 }
+
+.date-fields {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.date-fields select,
+.date-fields input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.date-fields select {
+  flex: 1.5;
+}
+
+.date-fields input {
+  flex: 1;
+}
+
+.birthday-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.entry-notes {
+  font-size: 13px;
+  color: #444;
+  margin: 4px 0;
+  white-space: pre-wrap;
+}

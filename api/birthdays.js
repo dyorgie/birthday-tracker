@@ -12,7 +12,8 @@ export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
       const rows = await sql`
-        SELECT id, name, dob::text, notify_week, notify_three_day, notify_one_day, notify_day_of
+        SELECT id, name, birth_month, birth_day, birth_year, notes,
+               notify_week, notify_three_day, notify_one_day, notify_day_of
         FROM birthdays
         WHERE user_id = ${userId}
         ORDER BY created_at ASC
@@ -21,28 +22,39 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const { name, dob, frequency } = req.body;
+      const { name, month, day, year, notes, frequency } = req.body;
 
-      if (!name || !dob) {
-        return res.status(400).json({ error: "Name and dob are required" });
+      if (!name || !month || !day) {
+        return res.status(400).json({ error: "Name, month, and day are required" });
       }
 
       if (name.length > 60) {
         return res.status(400).json({ error: "Name must be 60 characters or fewer" });
       }
 
+      if (month < 1 || month > 12 || day < 1 || day > 31) {
+        return res.status(400).json({ error: "Invalid month or day" });
+      }
+
       const rows = await sql`
-        INSERT INTO birthdays (name, dob, notify_week, notify_three_day, notify_one_day, notify_day_of, user_id)
+        INSERT INTO birthdays (
+          name, birth_month, birth_day, birth_year, notes,
+          notify_week, notify_three_day, notify_one_day, notify_day_of, user_id
+        )
         VALUES (
           ${name},
-          ${dob},
+          ${month},
+          ${day},
+          ${year ?? null},
+          ${notes ?? null},
           ${frequency?.week ?? false},
           ${frequency?.threeDay ?? false},
           ${frequency?.oneDay ?? false},
           ${frequency?.dayOf ?? false},
           ${userId}
         )
-        RETURNING id, name, dob::text, notify_week, notify_three_day, notify_one_day, notify_day_of
+        RETURNING id, name, birth_month, birth_day, birth_year, notes,
+                  notify_week, notify_three_day, notify_one_day, notify_day_of
       `;
 
       return res.status(201).json(rows[0]);
@@ -55,7 +67,6 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "id is required" });
       }
 
-      // WHERE clause includes user_id so you can only delete your own entries
       await sql`DELETE FROM birthdays WHERE id = ${id} AND user_id = ${userId}`;
       return res.status(200).json({ success: true });
     }

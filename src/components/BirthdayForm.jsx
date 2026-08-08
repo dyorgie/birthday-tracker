@@ -7,9 +7,17 @@ const FREQUENCY_OPTIONS = [
   { key: "dayOf", label: "Day itself" },
 ];
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
 export default function BirthdayForm({ onAdd }) {
   const [name, setName] = useState("");
-  const [dob, setDob] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [year, setYear] = useState("");
+  const [notes, setNotes] = useState("");
   const [frequency, setFrequency] = useState({
     week: false,
     threeDay: false,
@@ -24,11 +32,14 @@ export default function BirthdayForm({ onAdd }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!name || !dob) return;
+    if (!name || !month || !day) return;
 
     const newEntry = {
       name,
-      dob,
+      month: parseInt(month, 10),
+      day: parseInt(day, 10),
+      year: year ? parseInt(year, 10) : null,
+      notes: notes || null,
       frequency,
     };
 
@@ -36,7 +47,10 @@ export default function BirthdayForm({ onAdd }) {
 
     // reset form
     setName("");
-    setDob("");
+    setMonth("");
+    setDay("");
+    setYear("");
+    setNotes("");
     setFrequency({ week: false, threeDay: false, oneDay: false, dayOf: false });
   }
 
@@ -44,22 +58,63 @@ export default function BirthdayForm({ onAdd }) {
     <form onSubmit={handleSubmit} className="birthday-form">
       <label htmlFor="name">Name</label>
       <input
-  id="name"
-  type="text"
-  placeholder="e.g. Mom"
-  value={name}
-  onChange={(e) => setName(e.target.value)}
-  maxLength={60}
-  required
-/>
-
-      <label htmlFor="dob">Birthday</label>
-      <input
-        id="dob"
-        type="date"
-        value={dob}
-        onChange={(e) => setDob(e.target.value)}
+        id="name"
+        type="text"
+        placeholder="e.g. Mom"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        maxLength={60}
         required
+      />
+
+      <label>Birthday</label>
+      <div className="date-fields">
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          required
+          aria-label="Month"
+        >
+          <option value="" disabled>
+            Month
+          </option>
+          {MONTHS.map((m, i) => (
+            <option key={m} value={i + 1}>
+              {m}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          placeholder="Day"
+          min="1"
+          max="31"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+          required
+          aria-label="Day"
+        />
+
+        <input
+          type="number"
+          placeholder="Year (optional)"
+          min="1900"
+          max="2100"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          aria-label="Year (optional)"
+        />
+      </div>
+
+      <label htmlFor="notes">Notes (optional)</label>
+      <textarea
+        id="notes"
+        placeholder="Gift ideas, preferences, anything to remember..."
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        maxLength={500}
+        rows={3}
       />
 
       <label>Remind me:</label>
