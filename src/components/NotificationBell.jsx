@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { getUserId } from "../utils/userId";
+import { useState, useEffect, useRef } from "react";
 
 function formatTimeAgo(sentAt) {
   const sentDate = new Date(sentAt);
@@ -16,6 +16,7 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const userId = getUserId();
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/notifications", {
@@ -25,6 +26,17 @@ export default function NotificationBell() {
       .then(setNotifications)
       .catch((err) => console.error("Failed to load notifications:", err));
   }, [userId]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const hasUnread = notifications.some((n) => !n.read);
 
@@ -46,7 +58,7 @@ export default function NotificationBell() {
   }
 
   return (
-    <div className="notification-bell-wrapper">
+    <div className="notification-bell-wrapper" ref={wrapperRef}>
       <button className="notification-bell-btn" onClick={handleToggle} aria-label="Notifications">
         🔔
         {hasUnread && <span className="unread-dot" />}
