@@ -33,7 +33,7 @@ function getUpcomingAge(month, day, year) {
   return nextBirthdayYear - year;
 }
 
-export default function BirthdayList({ entries, onDelete }) {
+export default function BirthdayList({ entries, onDelete, onEdit }) {
   if (entries.length === 0) {
     return <p className="empty-state">No birthdays saved yet.</p>;
   }
@@ -59,15 +59,21 @@ export default function BirthdayList({ entries, onDelete }) {
                 ? activeReminders.map((key) => FREQUENCY_LABELS[key]).join(", ")
                 : "No reminders set"}
             </small>
-            <button
-              onClick={() => {
-                if (window.confirm(`Delete ${entry.name}'s birthday? This can't be undone.`)) {
-                  onDelete(entry.id);
-                }
-              }}
-            >
-              Delete
-            </button>
+            <div className="entry-actions">
+              <button className="edit-btn" onClick={() => onEdit(entry)}>
+                Edit
+              </button>
+              <button
+                className="delete-btn"
+                onClick={() => {
+                  if (window.confirm(`Delete ${entry.name}'s birthday? This can't be undone.`)) {
+                    onDelete(entry.id);
+                  }
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         );
       })}

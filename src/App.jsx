@@ -26,6 +26,7 @@ function App() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = getUserId();
+  const [editingEntry, setEditingEntry] = useState(null);
 
   const [notifStatus, setNotifStatus] = useState(
     typeof Notification !== "undefined" ? Notification.permission : "unsupported"
@@ -85,6 +86,30 @@ function App() {
     }
   }
 
+  async function handleUpdate(id, updatedData) {
+    try {
+      const res = await fetch(`/api/birthdays?id=${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-id": userId,
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!res.ok) throw new Error("Failed to update birthday");
+
+      const updated = await res.json();
+      setEntries((prev) =>
+        prev.map((entry) => (entry.id === id ? normalizeEntry(updated) : entry))
+      );
+      setEditingEntry(null);
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong updating that birthday. Please try again.");
+    }
+  }
+
   async function handleDelete(id) {
     try {
       const res = await fetch(`/api/birthdays?id=${id}`, {
@@ -109,7 +134,17 @@ function App() {
           🔔 Enable Notifications
         </button>
       )}
-      <BirthdayForm onAdd={handleAdd} />
+      <BirthdayForm
+        onAdd={handleAdd}
+        onUpdate={handleUpdate}
+        editingEntry={editingEntry}
+        onCancelEdit={() => setEditingEntry(null)}
+      />
+      {loading ? (
+        <p className="empty-state">Loading...</p>
+      ) : (
+        <BirthdayList entries={entries} onDelete={handleDelete} onEdit={setEditingEntry} />
+      )}
       {loading ? (
         <p className="empty-state">Loading...</p>
       ) : (

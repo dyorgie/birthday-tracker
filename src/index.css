@@ -93,17 +93,6 @@ h1 {
   color: #666;
 }
 
-.entry button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #e74c3c;
-  cursor: pointer;
-  font-size: 13px;
-}
-
 .empty-state {
   text-align: center;
   color: #999;
@@ -160,4 +149,40 @@ h1 {
   color: #444;
   margin: 4px 0;
   white-space: pre-wrap;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.delete-btn {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.cancel-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }

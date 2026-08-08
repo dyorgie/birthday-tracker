@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const FREQUENCY_OPTIONS = [
   { key: "week", label: "1 week before" },
@@ -12,18 +12,39 @@ const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-export default function BirthdayForm({ onAdd }) {
+const EMPTY_FREQUENCY = { week: false, threeDay: false, oneDay: false, dayOf: false };
+
+export default function BirthdayForm({ onAdd, onUpdate, editingEntry, onCancelEdit }) {
   const [name, setName] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [year, setYear] = useState("");
   const [notes, setNotes] = useState("");
-  const [frequency, setFrequency] = useState({
-    week: false,
-    threeDay: false,
-    oneDay: false,
-    dayOf: false,
-  });
+  const [frequency, setFrequency] = useState(EMPTY_FREQUENCY);
+
+  const isEditing = Boolean(editingEntry);
+
+  // When editingEntry changes (user clicked "Edit" on a different entry,
+  // or clicked it for the first time), populate the form with its values.
+  useEffect(() => {
+    if (editingEntry) {
+      setName(editingEntry.name);
+      setMonth(String(editingEntry.month));
+      setDay(String(editingEntry.day));
+      setYear(editingEntry.year ? String(editingEntry.year) : "");
+      setNotes(editingEntry.notes || "");
+      setFrequency(editingEntry.frequency);
+    }
+  }, [editingEntry]);
+
+  function resetForm() {
+    setName("");
+    setMonth("");
+    setDay("");
+    setYear("");
+    setNotes("");
+    setFrequency(EMPTY_FREQUENCY);
+  }
 
   function toggleFrequency(key) {
     setFrequency((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -34,7 +55,7 @@ export default function BirthdayForm({ onAdd }) {
 
     if (!name || !month || !day) return;
 
-    const newEntry = {
+    const entryData = {
       name,
       month: parseInt(month, 10),
       day: parseInt(day, 10),
@@ -43,15 +64,18 @@ export default function BirthdayForm({ onAdd }) {
       frequency,
     };
 
-    onAdd(newEntry);
+    if (isEditing) {
+      onUpdate(editingEntry.id, entryData);
+    } else {
+      onAdd(entryData);
+    }
 
-    // reset form
-    setName("");
-    setMonth("");
-    setDay("");
-    setYear("");
-    setNotes("");
-    setFrequency({ week: false, threeDay: false, oneDay: false, dayOf: false });
+    resetForm();
+  }
+
+  function handleCancel() {
+    resetForm();
+    onCancelEdit();
   }
 
   return (
@@ -131,7 +155,12 @@ export default function BirthdayForm({ onAdd }) {
         ))}
       </div>
 
-      <button type="submit">Save Birthday</button>
+      <button type="submit">{isEditing ? "Save Changes" : "Save Birthday"}</button>
+      {isEditing && (
+        <button type="button" className="cancel-btn" onClick={handleCancel}>
+          Cancel
+        </button>
+      )}
     </form>
   );
 }
