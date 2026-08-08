@@ -44,8 +44,8 @@ export default async function handler(req, res) {
       JOIN subscriptions s ON b.user_id = s.user_id
     `;
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const now = new Date();
+    const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
 
     let sentCount = 0;
 
@@ -66,6 +66,12 @@ export default async function handler(req, res) {
       try {
         await webpush.sendNotification(row.subscription, payload);
         sentCount++;
+
+        const parsedPayload = JSON.parse(payload);
+        await sql`
+          INSERT INTO notification_log (user_id, title, body)
+          VALUES (${row.user_id}, ${parsedPayload.title}, ${parsedPayload.body})
+        `;
       } catch (err) {
         if (err.statusCode === 410) {
           await sql`DELETE FROM subscriptions WHERE user_id = ${row.user_id}`;

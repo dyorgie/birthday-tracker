@@ -5,6 +5,7 @@ import { getUserId } from "./utils/userId";
 import { registerServiceWorker, subscribeToPush } from "./utils/push";
 import "./index.css";
 import { daysUntilNextBirthday } from "./utils/birthdayMath";
+import NotificationBell from "./components/NotificationBell";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -142,7 +143,10 @@ function App() {
 
   return (
     <div className="app">
-      <h1>🎂 Birthday Tracker</h1>
+      <div className="app-header">
+        <h1>🎂 Birthday Tracker</h1>
+        <NotificationBell />
+      </div>
       {notifStatus !== "granted" && notifStatus !== "unsupported" && (
         <button className="enable-notif-btn" onClick={handleEnableNotifications}>
           🔔 Enable Notifications
