@@ -4,6 +4,12 @@ import BirthdayList from "./components/BirthdayList";
 import { getUserId } from "./utils/userId";
 import { registerServiceWorker, subscribeToPush } from "./utils/push";
 import "./index.css";
+import { daysUntilNextBirthday } from "./utils/birthdayMath";
+
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
 
 function normalizeEntry(row) {
   return {
@@ -27,6 +33,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const userId = getUserId();
   const [editingEntry, setEditingEntry] = useState(null);
+  const [monthFilter, setMonthFilter] = useState("all");
 
   const [notifStatus, setNotifStatus] = useState(
     typeof Notification !== "undefined" ? Notification.permission : "unsupported"
@@ -126,6 +133,13 @@ function App() {
     }
   }
 
+  const visibleEntries = entries
+    .filter((entry) => monthFilter === "all" || entry.month === parseInt(monthFilter, 10))
+    .sort(
+      (a, b) =>
+        daysUntilNextBirthday(a.month, a.day) - daysUntilNextBirthday(b.month, b.day)
+    );
+
   return (
     <div className="app">
       <h1>🎂 Birthday Tracker</h1>
@@ -140,15 +154,28 @@ function App() {
         editingEntry={editingEntry}
         onCancelEdit={() => setEditingEntry(null)}
       />
-      {loading ? (
-        <p className="empty-state">Loading...</p>
-      ) : (
-        <BirthdayList entries={entries} onDelete={handleDelete} onEdit={setEditingEntry} />
+      {!loading && entries.length > 0 && (
+        <div className="filter-bar">
+          <label htmlFor="month-filter">Show:</label>
+          <select
+            id="month-filter"
+            value={monthFilter}
+            onChange={(e) => setMonthFilter(e.target.value)}
+          >
+            <option value="all">All months</option>
+            {MONTHS.map((m, i) => (
+              <option key={m} value={i + 1}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
+
       {loading ? (
         <p className="empty-state">Loading...</p>
       ) : (
-        <BirthdayList entries={entries} onDelete={handleDelete} />
+        <BirthdayList entries={visibleEntries} onDelete={handleDelete} onEdit={setEditingEntry} />
       )}
     </div>
   );

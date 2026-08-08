@@ -1,3 +1,5 @@
+import { getUpcomingAge } from "../utils/birthdayMath";
+
 const FREQUENCY_LABELS = {
   week: "1 week before",
   threeDay: "3 days before",
@@ -13,24 +15,6 @@ const MONTHS = [
 function formatDate(month, day, year) {
   const monthName = MONTHS[month - 1];
   return year ? `${monthName} ${day}, ${year}` : `${monthName} ${day}`;
-}
-
-// Returns the age this person will be turning on their next birthday,
-// or null if the birth year is unknown.
-function getUpcomingAge(month, day, year) {
-  if (!year) return null;
-
-  const today = new Date();
-  const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
-
-  let nextBirthdayYear = todayUTC.getUTCFullYear();
-  const thisYearsBirthday = new Date(Date.UTC(nextBirthdayYear, month - 1, day));
-
-  if (thisYearsBirthday < todayUTC) {
-    nextBirthdayYear += 1;
-  }
-
-  return nextBirthdayYear - year;
 }
 
 export default function BirthdayList({ entries, onDelete, onEdit }) {
