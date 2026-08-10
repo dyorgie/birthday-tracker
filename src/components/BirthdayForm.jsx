@@ -141,26 +141,28 @@ export default function BirthdayForm({ onAdd, onUpdate, editingEntry, onCancelEd
         rows={3}
       />
 
-      <label>Remind me:</label>
-      <div className="checkboxes">
-        {FREQUENCY_OPTIONS.map((opt) => (
-          <label key={opt.key}>
-            <input
-              type="checkbox"
-              checked={frequency[opt.key]}
-              onChange={() => toggleFrequency(opt.key)}
-            />
-            {opt.label}
-          </label>
-        ))}
-      </div>
+      <fieldset className="checkboxes-fieldset">
+        <legend>Remind me:</legend>
+        <div className="checkboxes">
+          {FREQUENCY_OPTIONS.map((opt) => (
+            <label key={opt.key}>
+              <input
+                type="checkbox"
+                checked={frequency[opt.key]}
+                onChange={() => toggleFrequency(opt.key)}
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-      <button type="submit">{isEditing ? "Save Changes" : "Save Birthday"}</button>
-      {isEditing && (
-        <button type="button" className="cancel-btn" onClick={handleCancel}>
-          Cancel
-        </button>
-      )}
+      <button type="submit" className="save-btn">
+        {isEditing ? "Save Changes" : "Save Birthday"}
+      </button>
+      <button type="button" className="cancel-btn" onClick={handleCancel}>
+        Cancel
+      </button>
     </form>
   );
 }

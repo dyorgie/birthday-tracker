@@ -44,11 +44,16 @@ export default function BirthdayList({ entries, onDelete, onEdit }) {
                 : "No reminders set"}
             </small>
             <div className="entry-actions">
-              <button className="edit-btn" onClick={() => onEdit(entry)}>
+              <button
+                className="edit-btn"
+                onClick={() => onEdit(entry)}
+                aria-label={`Edit ${entry.name}'s birthday`}
+              >
                 Edit
               </button>
               <button
                 className="delete-btn"
+                aria-label={`Delete ${entry.name}'s birthday`}
                 onClick={() => {
                   if (window.confirm(`Delete ${entry.name}'s birthday? This can't be undone.`)) {
                     onDelete(entry.id);

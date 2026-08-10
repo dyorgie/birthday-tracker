@@ -1,5 +1,5 @@
-import { getUserId } from "../utils/userId";
 import { useState, useEffect, useRef } from "react";
+import { getUserId } from "../utils/userId";
 
 function formatTimeAgo(sentAt) {
   const sentDate = new Date(sentAt);
@@ -17,6 +17,7 @@ export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const userId = getUserId();
   const wrapperRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/notifications", {
@@ -34,9 +35,20 @@ export default function NotificationBell() {
       }
     }
 
+    function handleEscape(event) {
+      if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen]);
 
   const hasUnread = notifications.some((n) => !n.read);
 
@@ -59,13 +71,26 @@ export default function NotificationBell() {
 
   return (
     <div className="notification-bell-wrapper" ref={wrapperRef}>
-      <button className="notification-bell-btn" onClick={handleToggle} aria-label="Notifications">
+      <button
+        ref={buttonRef}
+        className="notification-bell-btn"
+        onClick={handleToggle}
+        aria-label={hasUnread ? "Notifications (unread notifications available)" : "Notifications"}
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        aria-controls="notification-panel"
+      >
         🔔
-        {hasUnread && <span className="unread-dot" />}
+        {hasUnread && <span className="unread-dot" aria-hidden="true" />}
       </button>
 
       {isOpen && (
-        <div className="notification-panel">
+        <div
+          id="notification-panel"
+          className="notification-panel"
+          role="region"
+          aria-label="Recent notifications"
+        >
           <strong className="notification-panel-title">Recent Notifications</strong>
           {notifications.length === 0 ? (
             <p className="empty-state">No notifications yet.</p>

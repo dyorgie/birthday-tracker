@@ -1,8 +1,8 @@
 :root {
-  --color-primary: #ff6b81;
-  --color-secondary: #4ecdc4;
+  --color-primary: #e5006f;
+  --color-secondary: #24817b;
 
-  --color-danger: #dc2626;
+  --color-danger: #c81e1e;
   --color-danger-bg: #fef2f2;
 
   --color-info: #4338ca;
@@ -10,7 +10,7 @@
 
   --color-text: #333;
   --color-text-muted: #666;
-  --color-text-faint: #999;
+  --color-text-faint: #767676;
 
   --color-border: #ccc;
   --color-border-light: #eee;
@@ -103,6 +103,18 @@ h1 {
   flex: 1;
 }
 
+.checkboxes-fieldset {
+  border: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.checkboxes-fieldset legend {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 0;
+}
+
 .checkboxes {
   display: flex;
   flex-wrap: wrap;
@@ -118,7 +130,7 @@ h1 {
   margin-top: 0;
 }
 
-.birthday-form button[type="submit"] {
+.save-btn {
   margin-top: 16px;
   width: 100%;
   padding: 10px;
@@ -127,6 +139,7 @@ h1 {
   border: none;
   border-radius: 6px;
   font-size: 15px;
+  font-weight: bold;
   cursor: pointer;
 }
 
@@ -138,6 +151,7 @@ h1 {
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: 6px;
+  font-weight: normal;
   cursor: pointer;
 }
 
@@ -229,6 +243,51 @@ h1 {
   color: var(--color-text-faint);
 }
 
+.skeleton-entry {
+  gap: 8px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-border-light) 25%,
+    #f5f5f5 50%,
+    var(--color-border-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 40%;
+  height: 16px;
+}
+
+.skeleton-subtitle {
+  width: 60%;
+}
+
+.skeleton-small {
+  width: 35%;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line {
+    animation: none;
+  }
+}
+
 /* Notification bell */
 
 .notification-bell-wrapper {
@@ -294,4 +353,26 @@ h1 {
   font-size: 11px;
   color: var(--color-text-faint);
   margin-top: 2px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-info);
+  outline-offset: 2px;
+}
+
+.add-birthday-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
 }
