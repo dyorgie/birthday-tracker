@@ -1,8 +1,30 @@
+:root {
+  --color-primary: #ff6b81;
+  --color-secondary: #4ecdc4;
+
+  --color-danger: #dc2626;
+  --color-danger-bg: #fef2f2;
+
+  --color-info: #4338ca;
+  --color-info-bg: #eef2ff;
+
+  --color-text: #333;
+  --color-text-muted: #666;
+  --color-text-faint: #999;
+
+  --color-border: #ccc;
+  --color-border-light: #eee;
+
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #fafafa;
+  background: var(--color-bg);
   margin: 0;
   padding: 0;
+  color: var(--color-text);
 }
 
 .app {
@@ -16,8 +38,20 @@ h1 {
   text-align: center;
 }
 
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
 .birthday-form {
-  background: white;
+  background: var(--color-surface);
   padding: 16px;
   border-radius: 10px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
@@ -32,13 +66,41 @@ h1 {
 }
 
 .birthday-form input[type="text"],
-.birthday-form input[type="date"] {
+.birthday-form input[type="number"],
+.birthday-form textarea {
   width: 100%;
   padding: 8px;
   margin-top: 4px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
+  font-family: inherit;
+}
+
+.birthday-form textarea {
+  resize: vertical;
+}
+
+.date-fields {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.date-fields select,
+.date-fields input {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.date-fields select {
+  flex: 1.5;
+}
+
+.date-fields input {
+  flex: 1;
 }
 
 .checkboxes {
@@ -56,16 +118,54 @@ h1 {
   margin-top: 0;
 }
 
-.birthday-form button {
+.birthday-form button[type="submit"] {
   margin-top: 16px;
   width: 100%;
   padding: 10px;
-  background: #ff6b81;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 15px;
   cursor: pointer;
+}
+
+.cancel-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.enable-notif-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  background: var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.filter-bar select {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
 }
 
 .entries {
@@ -75,14 +175,13 @@ h1 {
 }
 
 .entry {
-  background: white;
+  background: var(--color-surface);
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 2px;
-  position: relative;
 }
 
 .entry strong {
@@ -90,63 +189,12 @@ h1 {
 }
 
 .entry small {
-  color: #666;
-}
-
-.empty-state {
-  text-align: center;
-  color: #999;
-}
-
-.enable-notif-btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  background: #4ecdc4;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.date-fields {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.date-fields select,
-.date-fields input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-.date-fields select {
-  flex: 1.5;
-}
-
-.date-fields input {
-  flex: 1;
-}
-
-.birthday-form textarea {
-  width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: inherit;
-  resize: vertical;
+  color: var(--color-text-muted);
 }
 
 .entry-notes {
   font-size: 13px;
-  color: #444;
+  color: var(--color-text);
   margin: 4px 0;
   white-space: pre-wrap;
 }
@@ -167,51 +215,21 @@ h1 {
 }
 
 .edit-btn {
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--color-info-bg);
+  color: var(--color-info);
 }
 
 .delete-btn {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
 }
 
-.cancel-btn {
-  margin-top: 8px;
-  width: 100%;
-  padding: 8px;
-  background: #eee;
-  color: #333;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.empty-state {
+  text-align: center;
+  color: var(--color-text-faint);
 }
 
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-.filter-bar select {
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  position: relative;
-}
-
-.app-header h1 {
-  margin: 0;
-}
+/* Notification bell */
 
 .notification-bell-wrapper {
   position: absolute;
@@ -233,9 +251,9 @@ h1 {
   right: 2px;
   width: 8px;
   height: 8px;
-  background: #e74c3c;
+  background: var(--color-danger);
   border-radius: 50%;
-  border: 1.5px solid white;
+  border: 1.5px solid var(--color-surface);
 }
 
 .notification-panel {
@@ -245,7 +263,7 @@ h1 {
   width: 260px;
   max-height: 320px;
   overflow-y: auto;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 12px;
@@ -260,7 +278,7 @@ h1 {
 
 .notification-item {
   padding: 8px 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-border-light);
 }
 
 .notification-item:first-of-type {
@@ -269,11 +287,11 @@ h1 {
 
 .notification-item-body {
   font-size: 13px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .notification-item-time {
   font-size: 11px;
-  color: #999;
+  color: var(--color-text-faint);
   margin-top: 2px;
 }
