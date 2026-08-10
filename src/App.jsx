@@ -6,6 +6,7 @@ import { registerServiceWorker, subscribeToPush } from "./utils/push";
 import "./index.css";
 import { daysUntilNextBirthday } from "./utils/birthdayMath";
 import NotificationBell from "./components/NotificationBell";
+import SkeletonEntry from "./components/SkeletonEntry";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -35,6 +36,7 @@ function App() {
   const userId = getUserId();
   const [editingEntry, setEditingEntry] = useState(null);
   const [monthFilter, setMonthFilter] = useState("all");
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [notifStatus, setNotifStatus] = useState(
     typeof Notification !== "undefined" ? Notification.permission : "unsupported"
@@ -143,44 +145,64 @@ function App() {
 
   return (
     <div className="app">
-      <div className="app-header">
+      <header className="app-header">
         <h1>🎂 Birthday Tracker</h1>
         <NotificationBell />
-      </div>
-      {notifStatus !== "granted" && notifStatus !== "unsupported" && (
-        <button className="enable-notif-btn" onClick={handleEnableNotifications}>
-          🔔 Enable Notifications
-        </button>
-      )}
-      <BirthdayForm
-        onAdd={handleAdd}
-        onUpdate={handleUpdate}
-        editingEntry={editingEntry}
-        onCancelEdit={() => setEditingEntry(null)}
-      />
-      {!loading && entries.length > 0 && (
-        <div className="filter-bar">
-          <label htmlFor="month-filter">Show:</label>
-          <select
-            id="month-filter"
-            value={monthFilter}
-            onChange={(e) => setMonthFilter(e.target.value)}
-          >
-            <option value="all">All months</option>
-            {MONTHS.map((m, i) => (
-              <option key={m} value={i + 1}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      </header>
+      <main>
+        {notifStatus !== "granted" && notifStatus !== "unsupported" && (
+          <button className="enable-notif-btn" onClick={handleEnableNotifications}>
+            🔔 Enable Notifications
+          </button>
+        )}
+        {!isFormOpen && !editingEntry && (
+          <button className="add-birthday-btn" onClick={() => setIsFormOpen(true)}>
+            + Add Birthday
+          </button>
+        )}
 
-      {loading ? (
-        <p className="empty-state">Loading...</p>
-      ) : (
-        <BirthdayList entries={visibleEntries} onDelete={handleDelete} onEdit={setEditingEntry} />
-      )}
+        {(isFormOpen || editingEntry) && (
+          <BirthdayForm
+            onAdd={(entry) => {
+              handleAdd(entry);
+              setIsFormOpen(false);
+            }}
+            onUpdate={handleUpdate}
+            editingEntry={editingEntry}
+            onCancelEdit={() => {
+              setEditingEntry(null);
+              setIsFormOpen(false);
+            }}
+          />
+        )}
+        {!loading && entries.length > 0 && (
+          <div className="filter-bar">
+            <label htmlFor="month-filter">Show:</label>
+            <select
+              id="month-filter"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+            >
+              <option value="all">All months</option>
+              {MONTHS.map((m, i) => (
+                <option key={m} value={i + 1}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="entries" aria-busy="true" aria-label="Loading birthdays">
+            <SkeletonEntry />
+            <SkeletonEntry />
+            <SkeletonEntry />
+          </div>
+        ) : (
+          <BirthdayList entries={visibleEntries} onDelete={handleDelete} onEdit={setEditingEntry} />
+        )}
+      </main>
     </div>
   );
 }
